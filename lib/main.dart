@@ -14,32 +14,33 @@ class ExpensesApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyHomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.deepOrange,
+        // accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-
   final _transactions = [
     Transaction(id: "t1", title: "Tenis", value: 310, date: DateTime.now()),
     Transaction(id: "t2", title: "Conta", value: 50.15, date: DateTime.now()),
   ];
 
-  _addTransaction(String title, double value){
+  _addTransaction(String title, double value) {
     final newTransaction = Transaction(
         id: Random().nextDouble().toString(),
         title: title,
         value: value,
-        date: DateTime.now()
-    );
-    setState((){
+        date: DateTime.now());
+    setState(() {
       _transactions.add(newTransaction);
     });
     Navigator.of(context).pop();
@@ -47,10 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return TransactionForm(_addTransaction);
-      });
+        context: context,
+        builder: (_) {
+          return TransactionForm(_addTransaction);
+        });
   }
 
   @override
