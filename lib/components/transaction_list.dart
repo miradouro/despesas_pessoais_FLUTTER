@@ -4,18 +4,21 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final void Function(String) onRemove;
 
-  TransactionList(this.transactions);
+  TransactionList(this.transactions, this.onRemove);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 380,
+      height: 530,
       child: transactions.isEmpty
           ? SingleChildScrollView(
-            child: Column(
+              child: Column(
                 children: <Widget>[
-                  SizedBox(height: 40,),
+                  SizedBox(
+                    height: 40,
+                  ),
                   Container(
                     height: 200,
                     child: Image.asset(
@@ -23,7 +26,9 @@ class TransactionList extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(height: 40,),
+                  SizedBox(
+                    height: 40,
+                  ),
                   Text(
                     "Nenhuma Transação Cadastrada!",
                     style: TextStyle(
@@ -34,54 +39,46 @@ class TransactionList extends StatelessWidget {
                   ),
                 ],
               ),
-          )
+            )
           : ListView.builder(
               itemCount: transactions.length,
               itemBuilder: (ctx, index) {
                 final tr = transactions[index];
                 return Card(
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                        child: Text(
-                          "R\$ ${tr.value.toStringAsFixed(2)}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            tr.title,
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.orange,
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: FittedBox(
+                          child: Text(
+                            "R\$ ${tr.value.toStringAsFixed(2)}",
                             style: TextStyle(
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
                             ),
                           ),
-                          Text(
-                            DateFormat('d MMM y').format(tr.date),
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ],
+                    ),
+                    title: Text(
+                      tr.title,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    subtitle: Text(
+                      DateFormat("d MMM y").format(tr.date),
+                    ),
+                    trailing: IconButton(
+                      color: Theme.of(context).errorColor,
+                      icon: Icon(Icons.delete),
+                      onPressed: () => onRemove(tr.id),
+                    ),
                   ),
                 );
               },

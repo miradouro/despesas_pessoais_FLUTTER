@@ -12,13 +12,31 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData tema = ThemeData();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyHomePage(),
-      theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
-        // accentColor: Colors.amber,
-        fontFamily: 'Quicksand',
+      theme: tema.copyWith(
+        colorScheme: tema.colorScheme.copyWith(
+          primary: Colors.orange,
+          secondary: Colors.amber,
+        ),
+        textTheme: tema.textTheme.copyWith(
+          headline6: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        appBarTheme: AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -31,24 +49,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
-      id: "t0",
-      title: "Bill",
-      value: 10,
-      date: DateTime.now().subtract(Duration(days: 33)),
-    ),
-    Transaction(
-      id: "t1",
-      title: "Tenis",
-      value: 210,
-      date: DateTime.now().subtract(Duration(days: 3)),
-    ),
-    Transaction(
-      id: "t2",
-      title: "Conta",
-      value: 150.15,
-      date: DateTime.now().subtract(Duration(days: 4)),
-    ),
+    Transaction(id: "t1", title: "Bill", value: 10, date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(id: "t1", title: "Tenis", value: 210, date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(id: "t2", title: "Conta", value: 150.15, date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(id: "t3", title: "Bill", value: 10, date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(id: "t4", title: "Tenis", value: 210, date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(id: "t5", title: "Conta", value: 150.15, date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(id: "t6", title: "Bill", value: 10, date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(id: "t7", title: "Tenis", value: 210, date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(id: "t8", title: "Conta", value: 150.15, date: DateTime.now().subtract(Duration(days: 4))),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -59,16 +68,23 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
-        id: Random().nextDouble().toString(),
-        title: title,
-        value: value,
-        date: DateTime.now());
+      id: Random().nextDouble().toString(),
+      title: title,
+      value: value,
+      date: date,
+    );
     setState(() {
       _transactions.add(newTransaction);
     });
     Navigator.of(context).pop();
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -97,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Chart(_recentTransactions),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _removeTransaction),
           ],
         ),
       ),
