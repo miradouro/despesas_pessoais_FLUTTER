@@ -1,9 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'components/chart.dart';
 import 'components/transaction_form.dart';
 import 'models/transaction.dart';
 import 'components/transaction_list.dart';
 import 'dart:math';
+import 'package:flutter/services.dart';
 
 void main() => runApp(const ExpensesApp());
 
@@ -12,6 +15,11 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
+
     final ThemeData tema = ThemeData();
 
     return MaterialApp(
@@ -48,16 +56,53 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _showChart = false;
   final List<Transaction> _transactions = [
-    Transaction(id: "t1", title: "Bill", value: 10, date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(id: "t1", title: "Tenis", value: 210, date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(id: "t2", title: "Conta", value: 150.15, date: DateTime.now().subtract(Duration(days: 4))),
-    Transaction(id: "t3", title: "Bill", value: 10, date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(id: "t4", title: "Tenis", value: 210, date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(id: "t5", title: "Conta", value: 150.15, date: DateTime.now().subtract(Duration(days: 4))),
-    Transaction(id: "t6", title: "Bill", value: 10, date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(id: "t7", title: "Tenis", value: 210, date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(id: "t8", title: "Conta", value: 150.15, date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: "t1",
+        title: "Bill",
+        value: 10,
+        date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(
+        id: "t1",
+        title: "Tenis",
+        value: 210,
+        date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(
+        id: "t2",
+        title: "Conta",
+        value: 150.15,
+        date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: "t3",
+        title: "Bill",
+        value: 10,
+        date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(
+        id: "t4",
+        title: "Tenis",
+        value: 210,
+        date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(
+        id: "t5",
+        title: "Conta",
+        value: 150.15,
+        date: DateTime.now().subtract(Duration(days: 4))),
+    Transaction(
+        id: "t6",
+        title: "Bill",
+        value: 10,
+        date: DateTime.now().subtract(Duration(days: 33))),
+    Transaction(
+        id: "t7",
+        title: "Tenis",
+        value: 210,
+        date: DateTime.now().subtract(Duration(days: 3))),
+    Transaction(
+        id: "t8",
+        title: "Conta",
+        value: 150.15,
+        date: DateTime.now().subtract(Duration(days: 4))),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -97,23 +142,56 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Despesas Pessoais"),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () => _openTransactionFormModal(context),
-            icon: Icon(Icons.add),
-          ),
-        ],
+    final appBar = AppBar(
+      title: Text(
+        "Despesas Pessoais",
       ),
+      centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          onPressed: () => _openTransactionFormModal(context),
+          icon: Icon(Icons.add),
+        ),
+      ],
+    );
+
+    final avaliableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions, _removeTransaction),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Exibir Grafico"),
+                Switch(
+                  value: _showChart,
+                  onChanged: (value) {
+                    setState(() {
+                      _showChart = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            if (_showChart)
+              Container(
+                height: avaliableHeight * 0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (!_showChart)
+              Container(
+                height: avaliableHeight * 0.7,
+                child: TransactionList(
+                  _transactions,
+                  _removeTransaction,
+                ),
+              ),
           ],
         ),
       ),
