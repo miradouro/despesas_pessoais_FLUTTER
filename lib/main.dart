@@ -58,51 +58,51 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _showChart = false;
   final List<Transaction> _transactions = [
-    Transaction(
-        id: "t1",
-        title: "Bill",
-        value: 10,
-        date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(
-        id: "t1",
-        title: "Tenis",
-        value: 210,
-        date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(
-        id: "t2",
-        title: "Conta",
-        value: 150.15,
-        date: DateTime.now().subtract(Duration(days: 4))),
-    Transaction(
-        id: "t3",
-        title: "Bill",
-        value: 10,
-        date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(
-        id: "t4",
-        title: "Tenis",
-        value: 210,
-        date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(
-        id: "t5",
-        title: "Conta",
-        value: 150.15,
-        date: DateTime.now().subtract(Duration(days: 4))),
-    Transaction(
-        id: "t6",
-        title: "Bill",
-        value: 10,
-        date: DateTime.now().subtract(Duration(days: 33))),
-    Transaction(
-        id: "t7",
-        title: "Tenis",
-        value: 210,
-        date: DateTime.now().subtract(Duration(days: 3))),
-    Transaction(
-        id: "t8",
-        title: "Conta",
-        value: 150.15,
-        date: DateTime.now().subtract(Duration(days: 4))),
+    // Transaction(
+    //     id: "t1",
+    //     title: "Bill",
+    //     value: 10,
+    //     date: DateTime.now().subtract(Duration(days: 33))),
+    // Transaction(
+    //     id: "t1",
+    //     title: "Tenis",
+    //     value: 210,
+    //     date: DateTime.now().subtract(Duration(days: 3))),
+    // Transaction(
+    //     id: "t2",
+    //     title: "Conta",
+    //     value: 150.15,
+    //     date: DateTime.now().subtract(Duration(days: 4))),
+    // Transaction(
+    //     id: "t3",
+    //     title: "Bill",
+    //     value: 10,
+    //     date: DateTime.now().subtract(Duration(days: 33))),
+    // Transaction(
+    //     id: "t4",
+    //     title: "Tenis",
+    //     value: 210,
+    //     date: DateTime.now().subtract(Duration(days: 3))),
+    // Transaction(
+    //     id: "t5",
+    //     title: "Conta",
+    //     value: 150.15,
+    //     date: DateTime.now().subtract(Duration(days: 4))),
+    // Transaction(
+    //     id: "t6",
+    //     title: "Bill",
+    //     value: 10,
+    //     date: DateTime.now().subtract(Duration(days: 33))),
+    // Transaction(
+    //     id: "t7",
+    //     title: "Tenis",
+    //     value: 210,
+    //     date: DateTime.now().subtract(Duration(days: 3))),
+    // Transaction(
+    //     id: "t8",
+    //     title: "Conta",
+    //     value: 150.15,
+    //     date: DateTime.now().subtract(Duration(days: 4))),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -142,12 +142,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool islandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: Text(
         "Despesas Pessoais",
       ),
       centerTitle: true,
       actions: <Widget>[
+        if(islandscape)
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+            icon: Icon(_showChart ? Icons.list : Icons.pie_chart),
+          ),
         IconButton(
           onPressed: () => _openTransactionFormModal(context),
           icon: Icon(Icons.add),
@@ -165,28 +177,30 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Exibir Grafico"),
-                Switch(
-                  value: _showChart,
-                  onChanged: (value) {
-                    setState(() {
-                      _showChart = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            if (_showChart)
+            if(islandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Exibir Grafico"),
+                  Switch.adaptive(
+                    activeColor: Colors.green,
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (_showChart || !islandscape)
               Container(
-                height: avaliableHeight * 0.3,
+                height: avaliableHeight * (islandscape ? 0.7 : 0.3),
                 child: Chart(_recentTransactions),
               ),
-            if (!_showChart)
+            if (!_showChart || !islandscape)
               Container(
-                height: avaliableHeight * 0.7,
+                height: avaliableHeight * (islandscape ? 0.9 : 0.7),
                 child: TransactionList(
                   _transactions,
                   _removeTransaction,

@@ -37,8 +37,7 @@ class _TransactionFormState extends State<TransactionForm> {
       lastDate: last,
     ).then((date) {
       if (date != null) {
-        return
-        setState(() {
+        return setState(() {
           data = true;
           selected = date.toLocal();
           print(selected);
@@ -65,73 +64,82 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 10,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: _titleController,
-              onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: "Titulo",
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 10,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            10,
+            10,
+            10,
+            250,
+          ),
+          child: Column(
+            children: <Widget>[
+              TextField(
+                controller: _titleController,
+                onSubmitted: (_) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: "Titulo",
+                ),
               ),
-            ),
-            TextField(
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              controller: _valueController,
-              onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: "Valor (R\$)",
+              TextField(
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                controller: _valueController,
+                onSubmitted: (_) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: "Valor (R\$)",
+                ),
               ),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: [
-                  Expanded(
+              Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        data == false
+                            ? "Nenuma data selecionada"
+                            : DateFormat("dd/MM/y").format(selected),
+                        //"Data Selecionada ${DateFormat("dd/MM/y").format(data)}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () => displayDatePicker(context),
+                      child: Text(
+                        "Selecionar Data",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      primary: Colors.deepPurple,
+                      backgroundColor: Colors.orange,
+                    ),
+                    onPressed: _submitForm,
                     child: Text(
-                      data == false ? "Nenuma data selecionada" : DateFormat("dd/MM/y").format(selected),
-                      //"Data Selecionada ${DateFormat("dd/MM/y").format(data)}",
+                      "Nova Despesa",
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => displayDatePicker(context),
-                    child: Text(
-                      "Selecionar Data",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    primary: Colors.deepPurple,
-                    backgroundColor: Colors.orange,
-                  ),
-                  onPressed: _submitForm,
-                  child: Text(
-                    "Nova Despesa",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
